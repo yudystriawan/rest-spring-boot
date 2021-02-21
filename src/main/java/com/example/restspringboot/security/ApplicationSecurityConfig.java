@@ -23,8 +23,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/api/restos").hasRole(OWNER.name()).anyRequest().authenticated().and()
-                .httpBasic();
+        http.csrf().disable().authorizeRequests().antMatchers("/api/restos").hasRole(OWNER.name()).anyRequest()
+                .authenticated().and().httpBasic();
     }
 
     @Override
