@@ -1,34 +1,31 @@
 package com.example.restspringboot.user;
 
 import java.sql.Timestamp;
-import java.util.UUID;
+import java.util.Collection;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.restspringboot.security.ApplicationUserRole;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
-@EqualsAndHashCode
-public class User {
+public class User implements UserDetails {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,11 +36,14 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    private Boolean verified;
+    private String password;
 
-    @Column(name = "verification_token")
-    @JsonIgnore
-    private String verificationToken;
+    @Enumerated(EnumType.STRING)
+    private ApplicationUserRole role;
+
+    private Boolean locked = false;
+
+    private Boolean enabled = false;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -53,11 +53,47 @@ public class User {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    public User(String name, String email) {
+    public User(String name, String email, String password, ApplicationUserRole role) {
         this.name = name;
         this.email = email;
-        this.verified = false;
-        this.verificationToken = UUID.randomUUID().toString();
+        this.password = password;
+        this.role = role;
+        enabled = true;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getGrantedAuthorities();
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !locked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
     }
 
 }
