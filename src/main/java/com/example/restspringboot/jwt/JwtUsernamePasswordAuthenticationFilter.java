@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
 
+import javax.crypto.SecretKey;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -15,11 +16,12 @@ import org.springframework.security.core.*;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 
 public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtConfig jwtConfig;
+    private final SecretKey secretKey;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
@@ -52,16 +54,18 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
             Authentication authResult) throws IOException, ServletException {
 
-        String key = "SecretKeySecretKeySecretKeySecretKeySecretKeySecretKeySecretKeySecretKey";
-
         String token = Jwts.builder().setSubject(authResult.getName()).claim("authorities", authResult.getAuthorities())
-                .setIssuedAt(new Date()).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(1)))
-                .signWith(Keys.hmacShaKeyFor(key.getBytes())).compact();
+                .setIssuedAt(new Date())
+                .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays())))
+                .signWith(secretKey).compact();
 
-        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + " " + token);
     }
 
-    public JwtUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JwtUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig,
+            SecretKey secretKey) {
         this.authenticationManager = authenticationManager;
+        this.jwtConfig = jwtConfig;
+        this.secretKey = secretKey;
     }
 }

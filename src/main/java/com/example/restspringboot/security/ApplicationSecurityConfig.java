@@ -2,6 +2,8 @@ package com.example.restspringboot.security;
 
 import static com.example.restspringboot.security.ApplicationUserRole.*;
 
+import javax.crypto.SecretKey;
+
 import com.example.restspringboot.jwt.*;
 import com.example.restspringboot.user.UserService;
 
@@ -28,11 +30,19 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         @Autowired
         private UserService userService;
 
+        @Autowired
+        private JwtConfig jwtConfig;
+
+        @Autowired
+        private SecretKey secretKey;
+
         @Override
         protected void configure(HttpSecurity http) throws Exception {
                 http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                                .addFilter(new JwtUsernamePasswordAuthenticationFilter(authenticationManager()))
-                                .addFilterAfter(new JwtTokenVerifier(), JwtUsernamePasswordAuthenticationFilter.class)
+                                .addFilter(new JwtUsernamePasswordAuthenticationFilter(authenticationManager(),
+                                                jwtConfig, secretKey))
+                                .addFilterAfter(new JwtTokenVerifier(jwtConfig, secretKey),
+                                                JwtUsernamePasswordAuthenticationFilter.class)
                                 .authorizeRequests().anyRequest().authenticated();
         }
 
