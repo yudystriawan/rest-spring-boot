@@ -1,4 +1,4 @@
-package com.example.restspringboot.jwt;
+package com.example.restspringboot.security.jwt;
 
 import java.io.IOException;
 import java.util.*;

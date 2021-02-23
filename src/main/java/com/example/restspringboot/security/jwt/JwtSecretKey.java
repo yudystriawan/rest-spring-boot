@@ -1,4 +1,4 @@
-package com.example.restspringboot.jwt;
+package com.example.restspringboot.security.jwt;
 
 import javax.crypto.SecretKey;
 

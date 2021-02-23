@@ -4,7 +4,7 @@ import static com.example.restspringboot.security.ApplicationUserRole.*;
 
 import javax.crypto.SecretKey;
 
-import com.example.restspringboot.jwt.*;
+import com.example.restspringboot.security.jwt.*;
 import com.example.restspringboot.user.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
