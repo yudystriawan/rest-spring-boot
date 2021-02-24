@@ -3,11 +3,19 @@ package com.example.restspringboot.user;
 import com.example.restspringboot.security.ApplicationUserRole;
 import java.sql.Timestamp;
 import java.util.Collection;
-import javax.persistence.*;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
-import lombok.*;
-import org.hibernate.annotations.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,6 +34,9 @@ public class User implements UserDetails {
   private Long id;
 
   private String name;
+
+  @Column(unique = true)
+  private String username;
 
   @Column(unique = true)
   private String email;
@@ -47,14 +58,6 @@ public class User implements UserDetails {
   @Column(name = "updated_at")
   private Timestamp updatedAt;
 
-  public User(String name, String email, String password, ApplicationUserRole role) {
-    this.name = name;
-    this.email = email;
-    this.password = password;
-    this.role = role;
-    enabled = true;
-  }
-
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return role.getGrantedAuthorities();
@@ -62,7 +65,7 @@ public class User implements UserDetails {
 
   @Override
   public String getUsername() {
-    return email;
+    return username;
   }
 
   @Override
@@ -88,5 +91,14 @@ public class User implements UserDetails {
   @Override
   public boolean isEnabled() {
     return enabled;
+  }
+
+  public User(
+      String name, String username, String email, String password, ApplicationUserRole role) {
+    this.name = name;
+    this.username = username;
+    this.email = email;
+    this.password = password;
+    this.role = role;
   }
 }
