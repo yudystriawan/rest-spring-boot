@@ -1,5 +1,9 @@
 package com.example.restspringboot.user;
 
+import com.example.restspringboot.auth.token.ConfirmationToken;
+import com.example.restspringboot.auth.token.ConfirmationTokenService;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,6 +14,7 @@ public class UserService implements UserDetailsService {
 
   @Autowired private UserRepository userRepository;
   @Autowired private PasswordEncoder passwordEncoder;
+  @Autowired private ConfirmationTokenService confirmationTokenService;
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -32,8 +37,18 @@ public class UserService implements UserDetailsService {
 
     userRepository.save(user);
 
-    // TODO: Send confirmation token;
+    // Send confirmation token;
+    String token = UUID.randomUUID().toString();
+    ConfirmationToken confirmationToken =
+        new ConfirmationToken(
+            token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15), user);
+    confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-    return user.toString();
+    // TODO: Send email
+    return token;
+  }
+
+  public int enabledUser(String email) {
+    return userRepository.enableUser(email);
   }
 }
