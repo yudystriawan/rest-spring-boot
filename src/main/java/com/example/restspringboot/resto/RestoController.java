@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/restos")
 public class RestoController {
 
-    @GetMapping
-    public ResponseEntity<?> index() {
-        return ResponseEntity.ok().body("list resto");
-    }
+  @GetMapping
+  public ResponseEntity<?> index() {
+    return ResponseEntity.ok().body("list resto");
+  }
 
-    @PostMapping
-    @PreAuthorize("hasAuthority('owner:write')")
-    public ResponseEntity<?> store() {
-        return ResponseEntity.ok().body("create resto");
-    }
+  @PostMapping
+  @PreAuthorize("hasAuthority('owner:write')")
+  public ResponseEntity<?> store() {
+    return ResponseEntity.ok().body("create resto");
+  }
 }

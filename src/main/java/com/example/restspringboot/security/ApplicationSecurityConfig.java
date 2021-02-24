@@ -2,11 +2,9 @@ package com.example.restspringboot.security;
 
 import static com.example.restspringboot.security.ApplicationUserRole.*;
 
-import javax.crypto.SecretKey;
-
 import com.example.restspringboot.security.jwt.*;
 import com.example.restspringboot.user.UserService;
-
+import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -24,54 +22,69 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
-        @Autowired
-        private PasswordEncoder passwordEncoder;
+  @Autowired private PasswordEncoder passwordEncoder;
 
-        @Autowired
-        private UserService userService;
+  @Autowired private UserService userService;
 
-        @Autowired
-        private JwtConfig jwtConfig;
+  @Autowired private JwtConfig jwtConfig;
 
-        @Autowired
-        private SecretKey secretKey;
+  @Autowired private SecretKey secretKey;
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-                http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                                .addFilter(new JwtUsernamePasswordAuthenticationFilter(authenticationManager(),
-                                                jwtConfig, secretKey))
-                                .addFilterAfter(new JwtTokenVerifier(jwtConfig, secretKey),
-                                                JwtUsernamePasswordAuthenticationFilter.class)
-                                .authorizeRequests().anyRequest().authenticated();
-        }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.csrf()
+        .disable()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .addFilter(
+            new JwtUsernamePasswordAuthenticationFilter(
+                authenticationManager(), jwtConfig, secretKey))
+        .addFilterAfter(
+            new JwtTokenVerifier(jwtConfig, secretKey),
+            JwtUsernamePasswordAuthenticationFilter.class)
+        .authorizeRequests()
+        .anyRequest()
+        .authenticated();
+  }
 
-        @Override
-        @Bean
-        protected UserDetailsService userDetailsService() {
-                UserDetails johnDoe = User.builder().username("john").password(passwordEncoder.encode("password"))
-                                .authorities(CUSTOMER.getGrantedAuthorities()).build();
+  @Override
+  @Bean
+  protected UserDetailsService userDetailsService() {
+    UserDetails johnDoe =
+        User.builder()
+            .username("john")
+            .password(passwordEncoder.encode("password"))
+            .authorities(CUSTOMER.getGrantedAuthorities())
+            .build();
 
-                UserDetails anna = User.builder().username("anna").password(passwordEncoder.encode("password"))
-                                .authorities(OWNER.getGrantedAuthorities()).build();
+    UserDetails anna =
+        User.builder()
+            .username("anna")
+            .password(passwordEncoder.encode("password"))
+            .authorities(OWNER.getGrantedAuthorities())
+            .build();
 
-                UserDetails alex = User.builder().username("alex").password(passwordEncoder.encode("password"))
-                                .authorities(STAFF.getGrantedAuthorities()).build();
+    UserDetails alex =
+        User.builder()
+            .username("alex")
+            .password(passwordEncoder.encode("password"))
+            .authorities(STAFF.getGrantedAuthorities())
+            .build();
 
-                return new InMemoryUserDetailsManager(johnDoe, anna, alex);
-        }
+    return new InMemoryUserDetailsManager(johnDoe, anna, alex);
+  }
 
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-                auth.authenticationProvider(daoAuthenticationProvider());
-        }
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.authenticationProvider(daoAuthenticationProvider());
+  }
 
-        @Bean
-        public DaoAuthenticationProvider daoAuthenticationProvider() {
-                DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-                provider.setPasswordEncoder(passwordEncoder);
-                provider.setUserDetailsService(userService);
-                return provider;
-        }
-
+  @Bean
+  public DaoAuthenticationProvider daoAuthenticationProvider() {
+    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+    provider.setPasswordEncoder(passwordEncoder);
+    provider.setUserDetailsService(userService);
+    return provider;
+  }
 }
