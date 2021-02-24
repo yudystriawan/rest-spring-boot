@@ -2,19 +2,23 @@ package com.example.restspringboot.user;
 
 import com.example.restspringboot.auth.token.ConfirmationToken;
 import com.example.restspringboot.auth.token.ConfirmationTokenService;
-import java.time.LocalDateTime;
-import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.*;
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Service
+@AllArgsConstructor
 public class UserService implements UserDetailsService {
 
-  @Autowired private UserRepository userRepository;
-  @Autowired private PasswordEncoder passwordEncoder;
-  @Autowired private ConfirmationTokenService confirmationTokenService;
+  private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final ConfirmationTokenService confirmationTokenService;
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

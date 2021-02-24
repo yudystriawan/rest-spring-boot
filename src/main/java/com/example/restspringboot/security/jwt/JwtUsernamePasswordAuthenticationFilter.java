@@ -1,18 +1,26 @@
 package com.example.restspringboot.security.jwt;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
+import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.crypto.SecretKey;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
-import javax.crypto.SecretKey;
-import javax.servlet.*;
-import javax.servlet.http.*;
-import org.springframework.security.authentication.*;
-import org.springframework.security.core.*;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@AllArgsConstructor
 public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
   private final AuthenticationManager authenticationManager;
@@ -31,17 +39,7 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
           new UsernamePasswordAuthenticationToken(
               authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
-      Authentication authenticate = authenticationManager.authenticate(authentication);
-      return authenticate;
-    } catch (JsonParseException e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    } catch (JsonMappingException e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    } catch (IOException e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
+      return authenticationManager.authenticate(authentication);
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException(e);
@@ -69,12 +67,5 @@ public class JwtUsernamePasswordAuthenticationFilter extends UsernamePasswordAut
 
     response.addHeader(
         jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + " " + token);
-  }
-
-  public JwtUsernamePasswordAuthenticationFilter(
-      AuthenticationManager authenticationManager, JwtConfig jwtConfig, SecretKey secretKey) {
-    this.authenticationManager = authenticationManager;
-    this.jwtConfig = jwtConfig;
-    this.secretKey = secretKey;
   }
 }

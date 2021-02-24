@@ -1,14 +1,16 @@
 package com.example.restspringboot.auth.token;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 @Service
+@AllArgsConstructor
 public class ConfirmationTokenService {
 
-  @Autowired private ConfirmationTokenRepository confirmationTokenRepository;
+  private final ConfirmationTokenRepository confirmationTokenRepository;
 
   public void saveConfirmationToken(ConfirmationToken token) {
     confirmationTokenRepository.save(token);

@@ -1,11 +1,12 @@
 package com.example.restspringboot.security;
 
-import static com.example.restspringboot.security.ApplicationUserPermission.*;
-
 import com.google.common.collect.Sets;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import static com.example.restspringboot.security.ApplicationUserPermission.*;
 
 public enum ApplicationUserRole {
   CUSTOMER(Sets.newHashSet(CUSTOMER_READ, CUSTOMER_WRITE, RESTO_READ, MENU_READ, OWNER_READ)),
@@ -16,7 +17,7 @@ public enum ApplicationUserRole {
 
   private final Set<ApplicationUserPermission> permissions;
 
-  private ApplicationUserRole(Set<ApplicationUserPermission> permissions) {
+  ApplicationUserRole(Set<ApplicationUserPermission> permissions) {
     this.permissions = permissions;
   }
 

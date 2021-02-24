@@ -1,6 +1,8 @@
 package com.example.restspringboot.security.jwt;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter

@@ -5,16 +5,18 @@ import com.example.restspringboot.auth.token.ConfirmationTokenService;
 import com.example.restspringboot.security.ApplicationUserRole;
 import com.example.restspringboot.user.User;
 import com.example.restspringboot.user.UserService;
-import java.time.LocalDateTime;
-import javax.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+
 @Service
+@AllArgsConstructor
 public class AuthService {
 
-  @Autowired private UserService userService;
-  @Autowired private ConfirmationTokenService confirmationTokenService;
+  private final UserService userService;
+  private final ConfirmationTokenService confirmationTokenService;
 
   public String register(RegistrationRequest request) {
     return userService.signUp(

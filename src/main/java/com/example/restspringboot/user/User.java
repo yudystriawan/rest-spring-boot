@@ -1,16 +1,6 @@
 package com.example.restspringboot.user;
 
 import com.example.restspringboot.security.ApplicationUserRole;
-import java.sql.Timestamp;
-import java.util.Collection;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +9,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Collection;
+
+@SuppressWarnings("ALL")
 @Entity
 @Table
 @Getter
@@ -58,6 +53,15 @@ public class User implements UserDetails {
   @Column(name = "updated_at")
   private Timestamp updatedAt;
 
+  public User(
+      String name, String username, String email, String password, ApplicationUserRole role) {
+    this.name = name;
+    this.username = username;
+    this.email = email;
+    this.password = password;
+    this.role = role;
+  }
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return role.getGrantedAuthorities();
@@ -91,14 +95,5 @@ public class User implements UserDetails {
   @Override
   public boolean isEnabled() {
     return enabled;
-  }
-
-  public User(
-      String name, String username, String email, String password, ApplicationUserRole role) {
-    this.name = name;
-    this.username = username;
-    this.email = email;
-    this.password = password;
-    this.role = role;
   }
 }

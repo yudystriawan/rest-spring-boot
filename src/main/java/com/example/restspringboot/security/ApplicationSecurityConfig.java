@@ -1,34 +1,39 @@
 package com.example.restspringboot.security;
 
-import static com.example.restspringboot.security.ApplicationUserRole.*;
-
-import com.example.restspringboot.security.jwt.*;
+import com.example.restspringboot.security.jwt.JwtConfig;
+import com.example.restspringboot.security.jwt.JwtTokenVerifier;
+import com.example.restspringboot.security.jwt.JwtUsernamePasswordAuthenticationFilter;
 import com.example.restspringboot.user.UserService;
-import javax.crypto.SecretKey;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
+import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.*;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.*;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+import javax.crypto.SecretKey;
+
+import static com.example.restspringboot.security.ApplicationUserRole.*;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@AllArgsConstructor
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
-  @Autowired private PasswordEncoder passwordEncoder;
-
-  @Autowired private UserService userService;
-
-  @Autowired private JwtConfig jwtConfig;
-
-  @Autowired private SecretKey secretKey;
+  private final PasswordEncoder passwordEncoder;
+  private final UserService userService;
+  private final JwtConfig jwtConfig;
+  private final SecretKey secretKey;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
