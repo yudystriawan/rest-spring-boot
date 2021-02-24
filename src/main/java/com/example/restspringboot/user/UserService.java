@@ -22,10 +22,14 @@ public class UserService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    return loadUserByEmail(email);
+  }
+
+  public User loadUserByEmail(String email){
     return userRepository
-        .findByEmail(email)
-        .orElseThrow(
-            () -> new UsernameNotFoundException(String.format("Email %s not found", email)));
+            .findByEmail(email)
+            .orElseThrow(
+                    () -> new UsernameNotFoundException(String.format("Email %s not found", email)));
   }
 
   public String signUp(User user) {
@@ -48,9 +52,10 @@ public class UserService implements UserDetailsService {
             token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15), user);
     confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-    // TODO: Send email
     return token;
   }
+
+
 
   public int enabledUser(String email) {
     return userRepository.enableUser(email);

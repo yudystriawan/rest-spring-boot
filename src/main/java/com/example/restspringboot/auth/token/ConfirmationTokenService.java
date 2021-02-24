@@ -20,6 +20,12 @@ public class ConfirmationTokenService {
     return confirmationTokenRepository.findByToken(token);
   }
 
+  public ConfirmationToken getTokenByUserId(Long id) {
+    return confirmationTokenRepository
+        .findByUserId(id)
+        .orElseThrow(() -> new IllegalStateException("Token not found"));
+  }
+
   public int setConfirmedAt(String token) {
     return confirmationTokenRepository.updateConfirmedAt(token, LocalDateTime.now());
   }
