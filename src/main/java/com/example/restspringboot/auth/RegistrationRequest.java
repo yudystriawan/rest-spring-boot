@@ -15,6 +15,7 @@ public class RegistrationRequest {
   private final String name;
 
   @Email(message = "Email should be valid")
+  @NotBlank(message = "Email cannot be empty")
   private final String email;
 
   @NotBlank(message = "Password cannot be empty")
