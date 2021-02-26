@@ -1,10 +1,7 @@
 package com.example.restspringboot.security;
 
-import static com.example.restspringboot.security.ApplicationUserRole.*;
-
-import com.example.restspringboot.security.jwt.JwtConfig;
-import com.example.restspringboot.security.jwt.JwtTokenVerifier;
-import com.example.restspringboot.security.jwt.JwtUsernamePasswordAuthenticationFilter;
+import com.example.restspringboot.jwt.JwtConfig;
+import com.example.restspringboot.jwt.JwtTokenVerifier;
 import com.example.restspringboot.user.UserService;
 import javax.crypto.SecretKey;
 import lombok.AllArgsConstructor;
@@ -18,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -37,12 +35,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
-        .addFilter(
-            new JwtUsernamePasswordAuthenticationFilter(
-                authenticationManager(), jwtConfig, secretKey))
         .addFilterAfter(
-            new JwtTokenVerifier(jwtConfig, secretKey),
-            JwtUsernamePasswordAuthenticationFilter.class)
+            new JwtTokenVerifier(jwtConfig, secretKey), UsernamePasswordAuthenticationFilter.class)
         .authorizeRequests()
         .antMatchers("/api/auth/**")
         .permitAll()

@@ -1,9 +1,8 @@
 package com.example.restspringboot.auth;
 
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "api/auth")
@@ -17,9 +16,14 @@ public class AuthController {
     return authService.register(request);
   }
 
+  @PostMapping("/login")
+  public String login(@RequestBody LoginRequest request) {
+    return authService.login(request);
+  }
+
   @GetMapping("/confirm")
-  public String confirm(@RequestParam("token") String token) {
-    return authService.confirmToken(token);
+  public String confirmAccount(@RequestParam("token") String token) {
+    return authService.confirmAccount(token);
   }
 
   // TODO: ERROR HANDLING

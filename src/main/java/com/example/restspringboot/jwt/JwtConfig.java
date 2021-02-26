@@ -1,14 +1,12 @@
-package com.example.restspringboot.security.jwt;
+package com.example.restspringboot.jwt;
 
 import com.google.common.net.HttpHeaders;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Configuration
 @ConfigurationProperties(prefix = "application.jwt")
