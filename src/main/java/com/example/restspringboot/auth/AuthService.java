@@ -79,6 +79,18 @@ public class AuthService {
     emailSender.send(user.getEmail(), bodyHtml(user.getName(), url));
   }
 
+  public String login(LoginRequest request) {
+
+    User user = userService.loadUserByEmail(request.getEmail());
+
+    Authentication authentication =
+        new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
+
+    JWT token = jwtService.generateToken(authentication);
+
+    return token.toString();
+  }
+
   private String bodyHtml(String name, String url) {
     return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n"
                + "\n"
@@ -171,16 +183,5 @@ public class AuthService {
         + "  </tbody></table><div class=\"yj6qo\"></div><div class=\"adL\">\n"
         + "\n"
         + "</div></div>";
-  }
-
-  public String login(LoginRequest request) {
-    User user = userService.loadUserByEmail(request.getEmail());
-
-    Authentication authentication =
-        new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
-
-    JWT token = jwtService.generateToken(authentication);
-
-    return token.toString();
   }
 }
