@@ -1,9 +1,12 @@
 package com.example.restspringboot.security;
 
+import static com.example.restspringboot.security.ApplicationUserRole.*;
+
 import com.example.restspringboot.security.jwt.JwtConfig;
 import com.example.restspringboot.security.jwt.JwtTokenVerifier;
 import com.example.restspringboot.security.jwt.JwtUsernamePasswordAuthenticationFilter;
 import com.example.restspringboot.user.UserService;
+import javax.crypto.SecretKey;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,15 +17,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-
-import javax.crypto.SecretKey;
-
-import static com.example.restspringboot.security.ApplicationUserRole.*;
 
 @Configuration
 @EnableWebSecurity
@@ -53,33 +48,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll()
         .anyRequest()
         .authenticated();
-  }
-
-  @Override
-  @Bean
-  protected UserDetailsService userDetailsService() {
-    UserDetails johnDoe =
-        User.builder()
-            .username("john")
-            .password(passwordEncoder.encode("password"))
-            .authorities(CUSTOMER.getGrantedAuthorities())
-            .build();
-
-    UserDetails anna =
-        User.builder()
-            .username("anna")
-            .password(passwordEncoder.encode("password"))
-            .authorities(OWNER.getGrantedAuthorities())
-            .build();
-
-    UserDetails alex =
-        User.builder()
-            .username("alex")
-            .password(passwordEncoder.encode("password"))
-            .authorities(STAFF.getGrantedAuthorities())
-            .build();
-
-    return new InMemoryUserDetailsManager(johnDoe, anna, alex);
   }
 
   @Override
